@@ -1,10 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const title = 'My Minimal React Webpack Babel Setup';
+import HomePage from './client/HomePage';
+
+const title = 'CSE polling';
 
 ReactDOM.render(
-  <div>{title}</div>,
+  <div>
+    <HomePage/>
+  </div>,
   document.getElementById('app')
 );
 
