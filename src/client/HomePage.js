@@ -29,20 +29,43 @@ class HomePage extends React.Component {
         }
     }
 
+    componentDidMount(){
+        // call api to update vote number
+        const socket = socketIOClient(this.state.endpoint);
+        socket.on('vote', (side)=>{
+            // this.setState((prevState)=>{
+
+            //     return {sideA: prevState.sideA + 1}
+            // })
+            this.setState(prevState=>(
+                {[side]: prevState[side] + 1}
+            ))
+        })
+    }
+
+    vote=(side)=>{
+        const socket = socketIOClient(this.state.endpoint);
+        socket.emit('vote', side)
+    }
     //
     _renderVotes=()=>{
         let results = [];
         for (let i = 0; i < this.state.sideA; i++) {
             results.push(<div> A +1 </div>);
+            results.push(<img src="assets/gun.png"/>);
+        }
+        for (let i = 0; i < this.state.sideB; i++) {
+            results.push(<div> B +1 </div>);
         }
         return results;
     }
 
     render() {
         const{classes} = this.props;
-        const socket = socketIOClient(this.state.endpoint);
+        console.log("sideA  ", this.state.sideA);
         return(
             <Fragment>
+                <button onClick={() => this.vote("A") }>Vote A</button>
                 <Typography variant="h2">
                     Is Water Wet?
                 </Typography>
