@@ -35,8 +35,8 @@ class HomePage extends React.Component {
         super(props);
         this.state = {
             endpoint: "localhost:8000",
-            sideA: 5,
-            sideB: 8
+            sideA: 3,
+            sideB: 4
         }
     }
 
