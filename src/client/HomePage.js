@@ -4,18 +4,29 @@ import socketIOClient from 'socket.io-client'
 import Typography from '@material-ui/core/Typography';
 
 const styles = StyleSheet.create({
-    card: {
-        marginTop: 48,
-        marginLeft: 96,
-        marginRight: 96,
-        marginBottom: 48,
-        padding: 20,
+    question: {
+        display: "flex",
+        justifyContent: "center",
+        color:"white",
+        marginTop: 150,
+        marginBottom: 100
     },
-    caption: {
-        marginLeft: 10,
+    options: {
+        display: "flex",
+        justifyContent: "space-evenly",
+        color:"white",
+        marginBottom: 50
     },
-    body: {
-        marginTop: 10,
+    voteContainer: {
+        display: "flex",
+        justifyContent: "space-evenly"
+    },
+    critterSymbol: {
+        width: 60,
+        height: 60
+    },
+    tempText: {
+        color:"white"
     }
 });
 
@@ -24,8 +35,8 @@ class HomePage extends React.Component {
         super(props);
         this.state = {
             endpoint: "localhost:8000",
-            sideA: 10,
-            sideB: 10
+            sideA: 5,
+            sideB: 8
         }
     }
 
@@ -48,28 +59,48 @@ class HomePage extends React.Component {
         socket.emit('vote', side)
     }
     //
-    _renderVotes=()=>{
+    _renderVotesA=()=>{
         let results = [];
         for (let i = 0; i < this.state.sideA; i++) {
-            results.push(<div> A +1 </div>);
-            results.push(<img src="assets/gun.png"/>);
-        }
-        for (let i = 0; i < this.state.sideB; i++) {
-            results.push(<div> B +1 </div>);
+            //results.push(<div className={css(styles.tempText)}> A +1 </div>);
+            results.push(<div><img className={css(styles.critterSymbol)} src="assets/A.png"/></div>);
         }
         return results;
     }
 
+    _renderVotesB=()=>{
+        let results = [];
+        for (let i = 0; i < this.state.sideB; i++) {
+            //results.push(<div className={css(styles.tempText)}> B +1 </div>);
+            results.push(<div><img className={css(styles.critterSymbol)} src="assets/B.png"/></div>);
+        }
+        return results;
+    }
     render() {
         const{classes} = this.props;
         console.log("sideA  ", this.state.sideA);
         return(
             <Fragment>
-                <button onClick={() => this.vote("A") }>Vote A</button>
-                <Typography variant="h2">
-                    Is Water Wet?
+                {/* <button onClick={() => this.vote("A") }>Vote A</button> */}
+                <Typography className={css(styles.question)} variant="h1">
+                    Is  Water  Wet?
                 </Typography>
-                {this._renderVotes()}
+                <div className={css(styles.options)}>
+                    <Typography className={css(styles.tempText)} variant="h5">
+                        Yes
+                    </Typography>
+                    <Typography className={css(styles.tempText)} variant="h5">
+                        No
+                    </Typography>
+                </div>
+                <div className={css(styles.voteContainer)}>
+                    <div> 
+                        {this._renderVotesA()}
+                    </div>
+                    <div> 
+                        {this._renderVotesB()}
+                    </div>
+                </div>
             </Fragment>
         );
     }
