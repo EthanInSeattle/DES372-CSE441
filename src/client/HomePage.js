@@ -3,6 +3,9 @@ import {css, StyleSheet} from 'aphrodite';
 import socketIOClient from 'socket.io-client'
 import Typography from '@material-ui/core/Typography';
 
+import AnimateA from './AnimateA';
+import AnimateB from './AnimateB';
+
 const styles = StyleSheet.create({
     question: {
         display: "flex",
@@ -35,8 +38,8 @@ class HomePage extends React.Component {
         super(props);
         this.state = {
             endpoint: "localhost:8000",
-            sideA: 0,
-            sideB: 0
+            sideA: 1,
+            sideB: 1
         }
     }
 
@@ -63,7 +66,8 @@ class HomePage extends React.Component {
         let results = [];
         for (let i = 0; i < this.state.sideA; i++) {
             //results.push(<div className={css(styles.tempText)}> A +1 </div>);
-            results.push(<div><img className={css(styles.critterSymbol)} src="assets/A.png"/></div>);
+            //results.push(<div><img className={css(styles.critterSymbol)} src="assets/A.png"/></div>);
+            results.push(<AnimateA/>);
         }
         return results;
     }
@@ -72,7 +76,8 @@ class HomePage extends React.Component {
         let results = [];
         for (let i = 0; i < this.state.sideB; i++) {
             //results.push(<div className={css(styles.tempText)}> B +1 </div>);
-            results.push(<div><img className={css(styles.critterSymbol)} src="assets/B.png"/></div>);
+            //results.push(<div><img className={css(styles.critterSymbol)} src="assets/B.png"/></div>);
+            results.push(<AnimateB/>);
         }
         return results;
     }
