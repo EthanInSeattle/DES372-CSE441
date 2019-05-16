@@ -8,8 +8,8 @@ const styles = StyleSheet.create({
         display: "flex",
         justifyContent: "center",
         color:"white",
-        marginTop: 150,
-        marginBottom: 100
+        marginTop: 100,
+        marginBottom: 50
     },
     options: {
         display: "flex",
@@ -35,8 +35,8 @@ class HomePage extends React.Component {
         super(props);
         this.state = {
             endpoint: "localhost:8000",
-            sideA: 3,
-            sideB: 4
+            sideA: 0,
+            sideB: 0
         }
     }
 

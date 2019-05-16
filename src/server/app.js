@@ -48,6 +48,7 @@ app.get("/vote/:side", function(req, res){
   //store result in db
   console.log(req.params.side);
   io.sockets.emit('vote', "side"+req.params.side);
+  res.send({votedSide: req.params.side})
 })
 
 app.use(express.static(path.join(__dirname, '../../dist')));
