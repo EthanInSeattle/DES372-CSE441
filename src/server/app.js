@@ -6,7 +6,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
-const apiRouter = require('./routes/apiRouter');
+const db = require('./db');
 
 server.listen(8000);
 // WARNING: app.listen(80) will NOT work here!
@@ -44,11 +44,43 @@ io.on('connection', socket => {
     })
 });
 
+// app.use(function(req, res, next) {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//   next();
+// });
+
 app.get("/vote/:side", function(req, res){
   //store result in db
   console.log(req.params.side);
   io.sockets.emit('vote', "side"+req.params.side);
   res.send({votedSide: req.params.side})
+})
+
+app.get("/api/current", function(req, res){
+  let today = new Date();
+  let date = today.getFullYear()+'-'+(today.getMonth() + 1)+'-'+today.getDate();
+  db.getCurrent(date)
+  .then(data=>{
+    res.json(data);
+  })
+  .catch(err=>{
+    console.log("error: ", err);
+  });
+})
+
+app.get("/api/vote/:side", function(req, res){
+  let today = new Date();
+  let date = today.getFullYear()+'-'+(today.getMonth() + 1)+'-'+today.getDate();
+  let side = req.params.side;
+  db.vote(date, side)
+  .then(data=>{
+    io.sockets.emit('vote', "side"+side);
+    res.send({votedSide: side})
+  })
+  .catch(err=>{
+    console.log("error: ", err);
+  });
 })
 
 app.use(express.static(path.join(__dirname, '../../dist')));

@@ -21,20 +21,25 @@ class SimpleTween extends Component {
 
 
 	componentDidMount(){
-		// create logo tween
+        // create logo tween
+        let direction = this.props.initialDirection == "RIGHT" ? 500 : -500;
 		this.logoTween = new TimelineLite({onComplete:function() {
+            // direction = -1*direction;
+            // this.restart();
+            //logoTween.reverse();
+            this.reverse();
             this.restart();
         }})
 			//.to(this.logoContainer, 2, { x: 500 })
-            .to(this.logoContainer,5, { rotation: 360, ease: Linear.easeNone, transformOrigin: "center" })
-            .to(this.logoContainer, 5, { x: -500, ease: Linear.easeNone }, '-=5');
+            .to(this.logoContainer, 5, { rotation: 360, ease: Linear.easeNone, transformOrigin: "center" })
+            .to(this.logoContainer, 5, { x: direction, ease: Linear.easeNone }, '-=5');
 	}
 
 
 	render(){
 		return <div className="container">
             <img
-                src="assets/B.png"
+                src={this.props.src}
                 alt=""
                 className={css(styles.critterSymbol)}
                 ref={ img => this.logoContainer = img }
