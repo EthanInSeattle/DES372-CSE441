@@ -5,16 +5,37 @@ import Typography from '@material-ui/core/Typography';
 import axios from 'axios';
 
 import RotatingBounceBall from './RotatingBounceBall';
+import { callbackify } from 'util';
 
 const styles = StyleSheet.create({
     question: {
-        display: "flex",
-        justifyContent: "center",
+        // display: "flex",
+        // justifyContent: "center",
         color:"white",
-        marginTop: 100,
-        marginBottom: 50
+        fontSize: 24,
+        '@media (min-width: 400px)': {
+            fontSize: 48
+        },
+        // position: "absolute",
+        // bottom: "calc(50vh)",
+        // // right: "calc(40vw)",
+        // left: "calc(40vw)"
+        // marginTop: 100,
+        // marginBottom: 50
+
+        // position: "absolute",
+        // left: 0,
+        // right: 0,
+        // margin: "auto",
+        //marginRight: "auto"
+
+
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)"
     },
-    options: {
+    optionContainer: {
         display: "flex",
         justifyContent: "space-evenly",
         color:"white",
@@ -31,8 +52,12 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60
     },
-    tempText: {
-        color:"white"
+    options: {
+        color:"white",
+        fontSize: 18,
+        '@media (min-width: 400px)': {
+            fontSize: 36
+        }
     }
 });
 
@@ -115,19 +140,6 @@ class HomePage extends React.Component {
         return(
             <Fragment>
                 {/* <button onClick={() => this.vote("A") }>Vote A</button> */}
-                <Typography className={css(styles.question)} variant="h1">
-                    {this.state.question}
-                </Typography>
-                <div className={css(styles.options)}>
-                    <div className={css(styles.optionBackground)}>
-                        <Typography className={css(styles.tempText)} variant="h5">
-                            {this.state.optionA}
-                        </Typography>
-                    </div>
-                    <Typography className={css(styles.tempText)} variant="h5">
-                        {this.state.optionB}
-                    </Typography>
-                </div>
                 <div className={css(styles.voteContainer)}>
                     <div> 
                         {this._renderVotesA()}
@@ -136,6 +148,27 @@ class HomePage extends React.Component {
                         {this._renderVotesB()}
                     </div>
                 </div>
+                <Typography className={css(styles.question)}>
+                    {this.state.question}
+                </Typography>
+                {/* <div className={css(styles.optionContainer)}>
+                    <div className={css(styles.optionBackground)}>
+                        <Typography className={css(styles.options)}>
+                            {this.state.optionA}
+                        </Typography>
+                    </div>
+                    <Typography className={css(styles.options)}>
+                        {this.state.optionB}
+                    </Typography>
+                </div> */}
+                {/* <div className={css(styles.voteContainer)}>
+                    <div> 
+                        {this._renderVotesA()}
+                    </div>
+                    <div> 
+                        {this._renderVotesB()}
+                    </div>
+                </div> */}
             </Fragment>
         );
     }
