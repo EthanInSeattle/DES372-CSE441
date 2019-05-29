@@ -1,13 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
-import HomePage from './client/HomePage';
+import Routes from './Routes';
 
-const title = 'CSE polling';
 
 ReactDOM.render(
   <div>
-    <HomePage/>
+    <CssBaseline/>
+    <Router>
+      <Routes/>
+    </Router>
   </div>,
   document.getElementById('app')
 );

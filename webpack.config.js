@@ -15,13 +15,14 @@ module.exports = {
     },
     output: {
       path: __dirname + '/dist', // the bundled file will be generated in the /dist folder
-      publicPath: '/',  // is this the public path for serving static files ????
+      publicPath: '/dist',  // is this the public path for serving static files ????
       filename: 'bundle.js' // the bundled file will be named “bundle.js"
     },
     plugins: [
       new webpack.HotModuleReplacementPlugin()
     ],
     devServer: {
+      historyApiFallback: true,
       contentBase: './dist',
       hot: true
     }

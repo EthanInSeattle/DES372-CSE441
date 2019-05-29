@@ -1,20 +1,30 @@
 import React, { Fragment } from 'react';
+import {Redirect} from 'react-router-dom';
 import {css, StyleSheet} from 'aphrodite';
 import socketIOClient from 'socket.io-client'
 import Typography from '@material-ui/core/Typography';
 import axios from 'axios';
 
 import RotatingBounceBall from './RotatingBounceBall';
-import { callbackify } from 'util';
+import ConfirmationModal from './ConfirmationModal';
+import Timer from './Timer';
 
 const styles = StyleSheet.create({
+    outterContainer: {
+        backgroundColor: "#000000",
+        height: "100vh"
+    },
     question: {
         // display: "flex",
         // justifyContent: "center",
+        textAlign: "center",
         color:"white",
-        fontSize: 24,
+        fontFamily: "t26-carbon,monospace",
+        //fontWeight: 400,
+        fontStyle: "normal",
+        fontSize: 48,
         '@media (min-width: 400px)': {
-            fontSize: 48
+            fontSize: 60
         },
         // position: "absolute",
         // bottom: "calc(50vh)",
@@ -52,32 +62,43 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60
     },
-    options: {
+    options: { 
         color:"white",
         fontSize: 18,
         '@media (min-width: 400px)': {
             fontSize: 36
         }
+    },
+    timer: {
+        position: "absolute",
+        bottom: "1%",
+        right: "2%"
     }
 });
 
-class HomePage extends React.Component {
+export default class HomePage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             question: "",
             qid: 0,
-            optionA: "",
+            optionA: "", 
             optionB: "",
             endpoint: "localhost:8000",
             sideA: 1,
-            sideB: 1
+            sideB: 1,
+            modalOpen: false,
+            critterSize: screen.width > 400 ? 60: 30,
+            result: "green",
+            ended: false
         }
     }
 
     componentDidMount(){
         // call api to update vote number
-        axios.get("http://localhost:8000/api/current")
+        console.log("domain", window.location.hostname);
+        let domain = window.location.hostname == "localhost" ? "localhost:8000" : window.location.hostname
+        axios.get(`http://${domain}/api/current`)
         .then(data=>{
             console.log("data", data.data);
             this.setState({
@@ -101,6 +122,24 @@ class HomePage extends React.Component {
             this.setState(prevState=>(
                 {[side]: prevState[side] + 1}
             ))
+        });
+        socket.on('confirm', ()=>{
+            this.setState({
+                modalOpen: true
+            });
+            setTimeout(function () {
+                //if (this.state.modalOpen) {
+                    //this.vote?
+                    this.setState({
+                        modalOpen: false
+                    });
+                //}
+            }.bind(this), 10000);
+        });
+        socket.on('cancel', ()=>{
+            this.setState({
+                modalOpen: false
+            });
         })
     }
 
@@ -109,69 +148,118 @@ class HomePage extends React.Component {
         socket.emit('vote', side)
     }
     //
-    _renderVotesA=()=>{
-        let results = [];
-        for (let i = 0; i < this.state.sideA; i++) {
-            //results.push(<div className={css(styles.tempText)}> A +1 </div>);
-            //results.push(<div><img className={css(styles.critterSymbol)} src="assets/A.png"/></div>);
-            results.push(<RotatingBounceBall 
-                            src="assets/A.png"
-                            initialDirection="RIGHT"
-                        />);
-        }
-        return results;
+
+    getRandomInt=(min, max)=>{
+        return Math.random() * (max - min) + min;
     }
 
-    _renderVotesB=()=>{
+    _renderVotes=()=>{
+        let critterSize = (this.state.sideA+this.state.sideB) < 100 ? 60 : 30;
+        if(window.innerWidth <= 400) {
+            critterSize = 30;
+        }
         let results = [];
+        for (let i = 0; i < this.state.sideA; i++) {
+            let xStart = this.getRandomInt(0, window.innerWidth)
+            let xEnd = window.innerWidth - xStart
+            let yStart = -1 * (i+1) * critterSize;
+            let yEnd =  window.innerHeight + yStart - critterSize*2;
+            // let xStart = 0
+            // let xEnd = window.innerWidth - critterSize;
+            // let yRandom = this.getRandomInt(0, window.innerHeight)
+            // let yStart = -1 * (i+2) * critterSize + yRandom;
+            // let yEnd =  window.innerHeight + yStart - yRandom;
+            results.push(<RotatingBounceBall
+                            key={i+1}
+                            src="/assets/A.png"
+                            size={critterSize}
+                            xStart={xStart}
+                            xEnd={xEnd}
+                            yStart={yStart}
+                            yEnd={yEnd}
+                        />);
+        }
         for (let i = 0; i < this.state.sideB; i++) {
-            //results.push(<div className={css(styles.tempText)}> B +1 </div>);
-            //results.push(<div><img className={css(styles.critterSymbol)} src="assets/B.png"/></div>);
+            let xStart = this.getRandomInt(0, window.innerWidth);
+            let xEnd = window.innerWidth - xStart;
+            // let yStart = -1 * (i + 3 + this.state.sideA) * critterSize;
+            //let yEnd =  window.innerHeight + yStart - critterSize*2;
+            let yStart = -1 * (i + 1 + this.state.sideA) * critterSize;
+            let yEnd =  window.innerHeight + yStart - critterSize * 2;
             results.push(<RotatingBounceBall 
-                src="assets/B.png"
-                initialDirection="LEFT"
+                key={-1*(i+1)}
+                src="/assets/B.png"
+                size={critterSize}
+                xStart={xStart}
+                xEnd={xEnd}
+                yStart={yStart}
+                yEnd={yEnd}
             />);
         }
         return results;
     }
+
+    renderResult=()=>{
+        this.setState({
+            ended: true,
+            result: this.state.sideA >= this.state.sideB ? "green" : "red"
+        })
+    }
+
+    getRemainingSeconds = () =>{
+        let today = new Date();
+        let currentHours = today.getHours();
+        let currentMins = today.getMinutes();
+        let currentSeconds = today.getSeconds();
+
+        let finalHour = 16;
+        let finalMinutes = 0;
+        let finalSeconds = 0;
+
+        let hours = finalHour - currentHours;
+        if(currentMins > finalMinutes) {
+            hours --;
+        }
+        let mins = finalMinutes - currentMins;
+        if(currentMins > finalMinutes) {
+            mins = 60 + finalMinutes - currentMins;
+        }
+        if(currentSeconds > finalSeconds) {
+            mins --;
+        }
+        let seconds = 60 - finalSeconds - currentSeconds;
+        return hours*60*60 + mins*60 + seconds;
+    }
+
     render() {
         const{classes} = this.props;
         console.log("sideA  ", this.state.sideA);
         return(
-            <Fragment>
-                {/* <button onClick={() => this.vote("A") }>Vote A</button> */}
-                <div className={css(styles.voteContainer)}>
-                    <div> 
-                        {this._renderVotesA()}
-                    </div>
-                    <div> 
-                        {this._renderVotesB()}
-                    </div>
-                </div>
+            <div className={css(styles.outterContainer)}>
+                {this._renderVotes()}
                 <Typography className={css(styles.question)}>
-                    {this.state.question}
+                    {this.state.question.toLowerCase()}
                 </Typography>
-                {/* <div className={css(styles.optionContainer)}>
-                    <div className={css(styles.optionBackground)}>
-                        <Typography className={css(styles.options)}>
-                            {this.state.optionA}
-                        </Typography>
-                    </div>
-                    <Typography className={css(styles.options)}>
-                        {this.state.optionB}
-                    </Typography>
-                </div> */}
-                {/* <div className={css(styles.voteContainer)}>
-                    <div> 
-                        {this._renderVotesA()}
-                    </div>
-                    <div> 
-                        {this._renderVotesB()}
-                    </div>
-                </div> */}
-            </Fragment>
+                <ConfirmationModal
+                    open={this.state.modalOpen}
+                    //handleClose={this.closeModal}
+                >
+                </ConfirmationModal>
+                <div
+                    className={css(styles.timer)}
+                >
+                    <Timer
+                        color="#ffffff"
+                        // font={}
+                        fontSize={window.innerWidth > 400 ? 24 : 12}
+                        // duration={60*60*9}
+                        duration={this.getRemainingSeconds()}
+                        autoStart
+                        callBack={this.renderResult}
+                    />
+                </div>
+                {this.state.ended && <Redirect to={`/result/${this.state.result}`}/>}
+            </div>
         );
     }
 };
-
-export default HomePage;
