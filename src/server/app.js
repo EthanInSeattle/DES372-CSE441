@@ -5,10 +5,10 @@ var io = require('socket.io')(server);
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-
+const port = process.env.PORT || 8081;
 const db = require('./db');
 
-server.listen(8000);
+server.listen(port);
 // WARNING: app.listen(80) will NOT work here!
 
 // app.get('/', function (req, res) {

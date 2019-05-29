@@ -1,13 +1,14 @@
 
 require('dotenv').config();
 const fs = require('fs');
+var path = require("path");
 const { Client } = require('pg');
 
-const createTable = fs.readFileSync('../sql/createTable.sql').toString();
-const getCurrent = fs.readFileSync('../sql/getCurrent.sql').toString();
-const postQuestion = fs.readFileSync('../sql/postQuestion.sql').toString();
-const voteA = fs.readFileSync('../sql/voteA.sql').toString();
-const voteB = fs.readFileSync('../sql/voteB.sql').toString();
+const createTable = fs.readFileSync((path.resolve(__dirname, '../sql/createTable.sql'))).toString();
+const getCurrent = fs.readFileSync((path.resolve(__dirname, '../sql/getCurrent.sql'))).toString();
+const postQuestion = fs.readFileSync((path.resolve(__dirname, '../sql/postQuestion.sql'))).toString();
+const voteA = fs.readFileSync((path.resolve(__dirname, '../sql/voteA.sql'))).toString();
+const voteB = fs.readFileSync((path.resolve(__dirname, '../sql/voteB.sql'))).toString();
 
 console.log("host: ", process.env.DB_HOST);
 const client = new Client({

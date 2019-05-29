@@ -97,7 +97,7 @@ export default class HomePage extends React.Component {
     componentDidMount(){
         // call api to update vote number
         console.log("domain", window.location.hostname);
-        let domain = window.location.hostname == "localhost" ? "localhost:8000" : window.location.hostname
+        let domain = window.location.hostname == "localhost" ? "localhost:8081" : window.location.hostname
         axios.get(`http://${domain}/api/current`)
         .then(data=>{
             console.log("data", data.data);
@@ -113,7 +113,7 @@ export default class HomePage extends React.Component {
         .catch(err=>{
             console.log("error: ", err);
         });
-        const socket = socketIOClient(this.state.endpoint);
+        const socket = socketIOClient(window.location.hostname == "localhost" ? "http://localhost:8081" : "http://" + window.location.hostname);
         socket.on('vote', (side)=>{
             // this.setState((prevState)=>{
 
@@ -144,7 +144,7 @@ export default class HomePage extends React.Component {
     }
 
     vote=(side)=>{
-        const socket = socketIOClient(this.state.endpoint);
+        const socket = socketIOClient(window.location.hostname == "localhost" ? "http://localhost:8081" : "http://" + window.location.hostname);
         socket.emit('vote', side)
     }
     //
