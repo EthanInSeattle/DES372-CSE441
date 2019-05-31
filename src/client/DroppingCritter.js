@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import TimelineMax from "gsap/TimelineMax";
 import TweenMax from "gsap/TweenMax";
 
-export default class RotatingBounceBall extends Component {
+export default class DroppingCritter extends Component {
 
 	constructor(props){
 		super(props);
@@ -16,18 +16,20 @@ export default class RotatingBounceBall extends Component {
 
 	componentDidMount(){
         let from ={
-            x:this.props.xStart, 
-            y:this.props.yStart
+            //x:(window.innerWidth - this.props.size)/2, 
+            //x: window.innerWidth/4,
+            x: this.props.x,
+            y:0
         };
         let to={
-            x:this.props.xEnd, 
-            y:this.props.yEnd, 
-            ease: Linear.easeNone
+            x: this.props.x,
+            y: this.props.y, 
+            //ease: Linear.easeNone
         };
-        let duration = this.getRandomInt(13, 20);
-        this.tween = new TimelineMax({repeat: -1, yoyo: true});
+        let duration = 3
+        this.tween = new TimelineMax();
         this.tween.add(TweenMax.fromTo(this.container, duration, from, to));
-        this.tween.to(this.container, duration, {rotation: 360, ease: Linear.easeNone, transformOrigin: "center" }, '-='+duration);
+        //this.tween.to(this.container, duration, {rotation: 360, ease: Linear.easeNone, transformOrigin: "center" }, '-='+duration);
         //this.tween.add(TweenMax.to(this.container, duration, {rotation: 360, ease: Linear.easeNone, transformOrigin: "center" }, '-='+duration));
             //.fromTo(this.container, duration, {x:this.props.xStart, y:this.props.yStart}, {x:this.props.xEnd, y:this.props.yEnd,ease: Linear.easeNone})
             //.fromTo(this.container, duration, from, to)
@@ -42,7 +44,7 @@ export default class RotatingBounceBall extends Component {
                 alt="critter"
                 style={{
                     height: this.props.size,
-                    //width: this.props.size
+                    width: this.props.size
                 }}
                 ref={ img => this.container = img }
             />
