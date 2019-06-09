@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "client-start": "webpack-dev-server --config ./webpack.config.js --mode development",
+    "client-start": "webpack-dev-server --config ./webpack.config.js --mode development --hot --inline",
     "server-start": "node ./src/server/app.js",
     "build": "webpack --config ./webpack.config.js --mode production",
+    "dev-build": "webpack --config ./webpack.config.js --mode development",
     "start": "node ./src/server/app.js"
   },
   "proxy": "http://localhost:8000/api",

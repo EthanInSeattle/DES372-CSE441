@@ -3,8 +3,9 @@ import { Route } from 'react-router-dom';
 
 import HomePage from './client/HomePage';
 import CreatePage from './client/CreatePage';
-import ResultPageGreen from './client/ResultPageGreen';
-import ResultPageRed from './client/ResultPageRed';
+import ResultPage from './client/ResultPage';
+// import ResultPageGreen from './client/ResultPageGreen';
+// import ResultPageRed from './client/ResultPageRed';
 
 const Routes = () => {
     return(
@@ -34,7 +35,7 @@ const Routes = () => {
                 // }}
                 component={CreatePage}
             />
-            <Route
+            {/* <Route
                 exact
                 path='/result/green'
                 component={ResultPageGreen}
@@ -48,6 +49,15 @@ const Routes = () => {
                 exact
                 path='/result/red'
                 component={ResultPageRed}
+                // render={()=>{
+                //         <ResultPage
+                //             bgColor="#000000"
+                //         />
+                //     }}
+            /> */}
+            <Route
+                path='/result'
+                component={ResultPage}
                 // render={()=>{
                 //         <ResultPage
                 //             bgColor="#000000"

@@ -49,13 +49,15 @@ export default class RotatingBounceBall extends Component {
         if(this.state.entry) {
             let transformFrom = {
                 x: this.props.xStart,
-                y: this.props.yEnd, 
-                scale: 5
+                //y: this.props.yEnd, 
+                y: 0,
+                scale: 100
             }
 
             let transformTo = {
                 x: this.props.xStart, 
-                y: this.props.yStart, 
+                //y: this.props.yStart, 
+                y: 0,
                 scale: 1
             }
             this.tween = new TimelineMax();
@@ -66,11 +68,14 @@ export default class RotatingBounceBall extends Component {
                 });
                 let from ={
                     x: this.props.xStart, 
-                    y: this.props.yStart
+                    // y: this.props.yStart
+                    //x: 0,
+                    y: 0
                 };
                 let to={
                     x: this.props.xEnd, 
-                    y: this.props.yEnd, 
+                    //y: this.props.yEnd, 
+                    y: window.innerHeight - this.props.size,
                     ease: Linear.easeNone,
                     rotation: 360,
                     transformOrigin: "center"
@@ -111,6 +116,8 @@ export default class RotatingBounceBall extends Component {
                 style={{
                     height: this.props.size,
                     //width: this.props.size
+                    position: 'absolute',
+                    top: "0%"
                 }}
                 ref={ img => this.container = img }
             />

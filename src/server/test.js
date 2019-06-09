@@ -7,7 +7,7 @@ const db = require('./db');
 //db.test("SELECT * FROM Questions;");
 let sql = `INSERT INTO 
              Votes (vote_date, qid, amountA, amountB)
-            VALUES ('2019-06-05', 1, 0, 0);`;
+            VALUES ('2019-06-13', 1, 0, 0);`;
 
 // let sql = `UPDATE Votes 
 //            SET amountA = 10, amountB = 20 
