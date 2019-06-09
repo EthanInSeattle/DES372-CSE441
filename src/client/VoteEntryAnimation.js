@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import TimelineMax from "gsap/TimelineMax";
 import TweenMax from "gsap/TweenMax";
 
-export default class DroppingCritter extends Component {
+export default class VoteEntryAnimation extends Component {
 
 	constructor(props){
 		super(props);
@@ -19,7 +19,7 @@ export default class DroppingCritter extends Component {
             //x:(window.innerWidth - this.props.size)/2, 
             //x: window.innerWidth/4,
             x: this.props.x,
-            y:0
+            y: this.props.y
         };
         let to={
             x: this.props.x,

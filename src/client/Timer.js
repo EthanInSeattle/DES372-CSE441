@@ -99,10 +99,10 @@ export default class Timer extends React.Component {
             <div 
                 style={{
                     color: this.props.color,
-                    fontFamily: "t26-carbon,monospace",
-                    fontStyle: "normal",
-                    fontSize: this.props.fontSize,
-                    textAlign: "center"
+                    // fontFamily: "t26-carbon,monospace",
+                    // fontStyle: "normal",
+                    // fontSize: this.props.fontSize,
+                    // textAlign: "center"
                 }}
             >
                 {this._renderTime()}

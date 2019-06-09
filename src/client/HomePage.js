@@ -9,18 +9,18 @@ import RotatingBounceBall from './RotatingBounceBall';
 import ConfirmationModal from './ConfirmationModal';
 import Timer from './Timer';
 import ThanksModal from './ThanksModal';
-import DroppingCritter from './DroppingCritter';
+import VoteEntryAnimation from './VoteEntryAnimation';
 
 const styles = StyleSheet.create({
     outterContainer: {
-        backgroundColor: "#000000",
+        backgroundColor: "#FFFFFF",
         height: "100vh"
     },
     question: {
         // display: "flex",
         // justifyContent: "center",
         textAlign: "center",
-        color:"white",
+        color:"black",
         fontFamily: "t26-carbon,monospace",
         //fontWeight: 400,
         fontStyle: "normal",
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     optionContainer: {
         display: "flex",
         justifyContent: "space-evenly",
-        color:"white",
+        color:"black",
         marginBottom: 50
     },
     optionBackground: {
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         height: 60
     },
     options: { 
-        color:"white",
+        color:"black",
         fontSize: 18,
         '@media (min-width: 400px)': {
             fontSize: 36
@@ -74,11 +74,23 @@ const styles = StyleSheet.create({
     timer: {
         position: "absolute",
         bottom: "1%",
-        right: "2%"
+        right: "2%",
+        fontFamily: "t26-carbon,monospace",
+        fontStyle: "normal",
+        fontSize: 12,
+        '@media (min-width: 400px)': {
+            fontSize: 24
+        },
     },
+    // timerText: {
+
+    // },
     optionCritter: {
         display: "flex",
         justifyContent: "space-evenly"
+    }, 
+    entry: {
+        backgroundColor: "white"
     }
 });
 
@@ -98,6 +110,7 @@ export default class HomePage extends React.Component {
             result: "green",
             ended: false,
             thankModalOpen: false,
+            entry: false
         }
     }
 
@@ -126,10 +139,21 @@ export default class HomePage extends React.Component {
 
             //     return {sideA: prevState.sideA + 1}
             // })
+            let question = this.state.question;
+            let wet = "+1 for water is wet";
+            let notWet = "+1  for water is not wet";
             this.setState(prevState=>({
                 [side]: prevState[side] + 1,
-                thankModalOpen: true
+                thankModalOpen: true,
+                question: side == "A" ? wet : notWet
             }));
+            setTimeout(function () {
+                this.setState({
+                    thanksModalOpen: false,
+                    question: question
+                });
+            }.bind(this), 3000);
+            //this.renderEntryAnimation();
             // setTimeout(function () {
             //     this.setState({
             //         thanksModalOpen: false
@@ -140,14 +164,14 @@ export default class HomePage extends React.Component {
             this.setState({
                 modalOpen: true
             });
-            setTimeout(function () {
-                //if (this.state.modalOpen) {
-                    //this.vote?
-                    this.setState({
-                        modalOpen: false
-                    });
-                //}
-            }.bind(this), 5000);
+            // setTimeout(function () {
+            //     //if (this.state.modalOpen) {
+            //         //this.vote?
+            //         this.setState({
+            //             question: false
+            //         });
+            //     //}
+            // }.bind(this), 5000);
         });
         socket.on('cancel', ()=>{
             this.setState({
@@ -166,53 +190,190 @@ export default class HomePage extends React.Component {
         return Math.random() * (max - min) + min;
     }
 
+    addSideA=(index, critterSize, results)=>{
+        let xStart = this.getRandomInt(0, window.innerWidth)
+        let xEnd = window.innerWidth - xStart
+        let yStart = -1 * (index+1) * critterSize;
+        let yEnd =  window.innerHeight + yStart - critterSize*2;
+        results.push(<RotatingBounceBall
+                        key={index+1}
+                        src={"/assets/A.png"}
+                        size={critterSize}
+                        xStart={xStart}
+                        xEnd={xEnd}
+                        yStart={yStart}
+                        yEnd={yEnd}
+                    />);
+    }
+
+    addSideB=(index, critterSize, results)=>{
+        let xStart = this.getRandomInt(0, window.innerWidth);
+        let xEnd = window.innerWidth - xStart;
+        let yStart = -1 * (index + 1 + this.state.sideA) * critterSize;
+        let yEnd =  window.innerHeight + yStart - critterSize * 2;
+        results.push(<RotatingBounceBall 
+            key={-1*(index+1)}
+            src={"/assets/B.png"}
+            size={critterSize}
+            xStart={xStart}
+            xEnd={xEnd}
+            yStart={yStart}
+            yEnd={yEnd}
+        />);
+    }
+
     _renderVotes=()=>{
+        let results = [];
         let critterSize = (this.state.sideA+this.state.sideB) < 100 ? 60 : 30;
         if(window.innerWidth <= 400) {
             critterSize = 30;
         }
-        let results = [];
-        for (let i = 0; i < this.state.sideA; i++) {
-            let xStart = this.getRandomInt(0, window.innerWidth)
-            let xEnd = window.innerWidth - xStart
-            let yStart = -1 * (i+1) * critterSize;
-            let yEnd =  window.innerHeight + yStart - critterSize*2;
-            // let xStart = 0
-            // let xEnd = window.innerWidth - critterSize;
-            // let yRandom = this.getRandomInt(0, window.innerHeight)
-            // let yStart = -1 * (i+2) * critterSize + yRandom;
-            // let yEnd =  window.innerHeight + yStart - yRandom;
-            results.push(<RotatingBounceBall
-                            key={i+1}
-                            src="/assets/A.png"
-                            size={critterSize}
-                            xStart={xStart}
-                            xEnd={xEnd}
-                            yStart={yStart}
-                            yEnd={yEnd}
-                        />);
-        }
-        for (let i = 0; i < this.state.sideB; i++) {
-            let xStart = this.getRandomInt(0, window.innerWidth);
-            let xEnd = window.innerWidth - xStart;
-            // let yStart = -1 * (i + 3 + this.state.sideA) * critterSize;
-            //let yEnd =  window.innerHeight + yStart - critterSize*2;
-            let yStart = -1 * (i + 1 + this.state.sideA) * critterSize;
-            let yEnd =  window.innerHeight + yStart - critterSize * 2;
-            results.push(<RotatingBounceBall 
-                key={-1*(i+1)}
-                src="/assets/B.png"
-                size={critterSize}
-                xStart={xStart}
-                xEnd={xEnd}
-                yStart={yStart}
-                yEnd={yEnd}
-            />);
+        let remainingA = this.state.sideA;
+        let remainingB = this.state.sideB;
+        while (remainingA != 0 || remainingB != 0) {
+            if (remainingA == 0) {
+                this.addSideB(this.state.sideB - remainingB, critterSize, results);
+                remainingB --;
+                console.log("added B");
+            } else if (remainingB == 0) {
+                this.addSideA(this.state.sideA - remainingA, critterSize, results);
+                remainingA --;
+                console.log("added A");
+            } else {
+                if (Math.random() < 0.5) {
+                    this.addSideA(this.state.sideA - remainingA, critterSize, results);
+                    remainingA --;
+                    console.log("added A");
+                } else {
+                    this.addSideB(this.state.sideB - remainingB, critterSize, results);
+                    remainingB --;
+                    console.log("added B");
+                }
+            }
         }
         return results;
+        // for (let i = 0; i < this.state.sideA + this.state.sideB; i++) {
+        //     if (Math.random() < 0.5) {
+        //         if (remainingA > 0) {
+        //             let xStart = this.getRandomInt(0, window.innerWidth)
+        //             let xEnd = window.innerWidth - xStart
+        //             let yStart = -1 * (i+1) * critterSize;
+        //             let yEnd =  window.innerHeight + yStart - critterSize*2;
+        //             // let xStart = 0
+        //             // let xEnd = window.innerWidth - critterSize;
+        //             // let yRandom = this.getRandomInt(0, window.innerHeight)
+        //             // let yStart = -1 * (i+2) * critterSize + yRandom;
+        //             // let yEnd =  window.innerHeight + yStart - yRandom;
+        //             results.push(<RotatingBounceBall
+        //                             key={i+1}
+        //                             src="/assets/A.png"
+        //                             size={critterSize}
+        //                             xStart={xStart}
+        //                             xEnd={xEnd}
+        //                             yStart={yStart}
+        //                             yEnd={yEnd}
+        //                         />);
+        //             remainingA--;
+        //         } else {
+        //             let xStart = this.getRandomInt(0, window.innerWidth);
+        //             let xEnd = window.innerWidth - xStart;
+        //             // let yStart = -1 * (i + 3 + this.state.sideA) * critterSize;
+        //             //let yEnd =  window.innerHeight + yStart - critterSize*2;
+        //             let yStart = -1 * (i + 1 + this.state.sideA) * critterSize;
+        //             let yEnd =  window.innerHeight + yStart - critterSize * 2;
+        //             results.push(<RotatingBounceBall 
+        //                 key={-1*(i+1)}
+        //                 src="/assets/B.png"
+        //                 size={critterSize}
+        //                 xStart={xStart}
+        //                 xEnd={xEnd}
+        //                 yStart={yStart}
+        //                 yEnd={yEnd}
+        //             />);
+        //             remainingB--;
+        //         }
+        //     } else {
+        //         if (remainingB > 0) {
+        //             let xStart = this.getRandomInt(0, window.innerWidth);
+        //             let xEnd = window.innerWidth - xStart;
+        //             // let yStart = -1 * (i + 3 + this.state.sideA) * critterSize;
+        //             //let yEnd =  window.innerHeight + yStart - critterSize*2;
+        //             let yStart = -1 * (i + 1 + this.state.sideA) * critterSize;
+        //             let yEnd =  window.innerHeight + yStart - critterSize * 2;
+        //             results.push(<RotatingBounceBall 
+        //                 key={-1*(i+1)}
+        //                 src="/assets/B.png"
+        //                 size={critterSize}
+        //                 xStart={xStart}
+        //                 xEnd={xEnd}
+        //                 yStart={yStart}
+        //                 yEnd={yEnd}
+        //             />);
+        //             remainingB--;
+        //         } else {
+        //             let xStart = this.getRandomInt(0, window.innerWidth)
+        //             let xEnd = window.innerWidth - xStart
+        //             let yStart = -1 * (i+1) * critterSize;
+        //             let yEnd =  window.innerHeight + yStart - critterSize*2;
+        //             // let xStart = 0
+        //             // let xEnd = window.innerWidth - critterSize;
+        //             // let yRandom = this.getRandomInt(0, window.innerHeight)
+        //             // let yStart = -1 * (i+2) * critterSize + yRandom;
+        //             // let yEnd =  window.innerHeight + yStart - yRandom;
+        //             results.push(<RotatingBounceBall
+        //                             key={i+1}
+        //                             src="/assets/A.png"
+        //                             size={critterSize}
+        //                             xStart={xStart}
+        //                             xEnd={xEnd}
+        //                             yStart={yStart}
+        //                             yEnd={yEnd}
+        //                         />);
+        //             remainingA--;
+        //         }
+        //     }
+        // }
+        // // for (let i = 0; i < this.state.sideA; i++) {
+        // //     let xStart = this.getRandomInt(0, window.innerWidth)
+        // //     let xEnd = window.innerWidth - xStart
+        // //     let yStart = -1 * (i+1) * critterSize;
+        // //     let yEnd =  window.innerHeight + yStart - critterSize*2;
+        // //     // let xStart = 0
+        // //     // let xEnd = window.innerWidth - critterSize;
+        // //     // let yRandom = this.getRandomInt(0, window.innerHeight)
+        // //     // let yStart = -1 * (i+2) * critterSize + yRandom;
+        // //     // let yEnd =  window.innerHeight + yStart - yRandom;
+        // //     results.push(<RotatingBounceBall
+        // //                     key={i+1}
+        // //                     src="/assets/A.png"
+        // //                     size={critterSize}
+        // //                     xStart={xStart}
+        // //                     xEnd={xEnd}
+        // //                     yStart={yStart}
+        // //                     yEnd={yEnd}
+        // //                 />);
+        // // }
+        // // for (let i = 0; i < this.state.sideB; i++) {
+        // //     let xStart = this.getRandomInt(0, window.innerWidth);
+        // //     let xEnd = window.innerWidth - xStart;
+        // //     // let yStart = -1 * (i + 3 + this.state.sideA) * critterSize;
+        // //     //let yEnd =  window.innerHeight + yStart - critterSize*2;
+        // //     let yStart = -1 * (i + 1 + this.state.sideA) * critterSize;
+        // //     let yEnd =  window.innerHeight + yStart - critterSize * 2;
+        // //     results.push(<RotatingBounceBall 
+        // //         key={-1*(i+1)}
+        // //         src="/assets/B.png"
+        // //         size={critterSize}
+        // //         xStart={xStart}
+        // //         xEnd={xEnd}
+        // //         yStart={yStart}
+        // //         yEnd={yEnd}
+        // //     />);
+        // // }
+        // return results;
     }
 
-    renderResult=()=>{
+    renderResult=(side)=>{
         this.setState({
             ended: true,
             result: this.state.sideA >= this.state.sideB ? "green" : "red"
@@ -225,7 +386,7 @@ export default class HomePage extends React.Component {
         let currentMins = today.getMinutes();
         let currentSeconds = today.getSeconds();
 
-        let finalHour = 16;
+        let finalHour = 18;
         let finalMinutes = 0;
         let finalSeconds = 0;
 
@@ -244,12 +405,33 @@ export default class HomePage extends React.Component {
         return hours*60*60 + mins*60 + seconds;
     }
 
+    renderEntryAnimation = (side) => {
+        this.setState({
+            entry: true
+        });
+        setTimeout(()=>this.setState({
+            entry: false
+        }), 5000);
+    }
+
     render() {
         const{classes} = this.props;
         console.log("sideA  ", this.state.sideA);
         return(
+            <>
+            {/* <div className={css(styles.entry)}>
+            {this.state.entry && 
+                    <VoteEntryAnimation
+                        src="/assets/A.png"
+                        size={200}
+                        x={window.innerWidth/4}
+                        y={window.innerHeight}
+                    />} 
+            </div> */}
+            {/* {this._renderVotes()} */}
+            {this.state.ended && <Redirect to={`/result/${this.state.result}`}/>}
             <div className={css(styles.outterContainer)}>
-                {/* {this._renderVotes()} */}
+                {this._renderVotes()}
                 <Typography className={css(styles.question)}>
                     {this.state.question.toLowerCase()}
                 </Typography>
@@ -266,31 +448,28 @@ export default class HomePage extends React.Component {
                     className={css(styles.timer)}
                 >
                     <Timer
-                        color="#ffffff"
+                        color="#000000"
                         // font={}
-                        fontSize={window.innerWidth > 400 ? 24 : 12}
+                        //fontSize={window.innerWidth > 400 ? 24 : 12}
                         // duration={60*60*9}
                         duration={this.getRemainingSeconds()}
                         autoStart
                         callBack={this.renderResult}
                     />
+                    UNTILL POLL CLOSES
                 </div>
-                <div className={css(styles.optionCritter)}>
-                    <DroppingCritter
+                {/* <div className={css(styles.optionCritter)}>
+                {this.state.entry && 
+                    <VoteEntryAnimation
                         src="/assets/A.png"
                         size={200}
                         x={window.innerWidth/4}
-                        y={window.innerHeight/2}
-                    />
-                    <DroppingCritter
-                        src="/assets/B.png"
-                        size={200}
-                        x={window.innerWidth/4*3}
-                        y={window.innerHeight/2}
-                    />
-                </div>
+                        y={window.innerHeight}
+                    />} 
+                </div> */}
                 {this.state.ended && <Redirect to={`/result/${this.state.result}`}/>}
             </div>
+            </>
         );
     }
 };

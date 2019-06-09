@@ -8,32 +8,100 @@ export default class RotatingBounceBall extends Component {
 		super(props);
 		this.container = null;
         this.tween = null;
+        this.state = {
+            entry: true
+        }
 	}
 
     getRandomInt=(min, max)=>{
         return Math.random() * (max - min) + min;
     }
 
-	componentDidMount(){
+    move=()=>{
         let from ={
-            x:this.props.xStart, 
-            y:this.props.yStart
+            x: this.props.xStart, 
+            y: this.props.yStart
         };
         let to={
-            x:this.props.xEnd, 
-            y:this.props.yEnd, 
-            ease: Linear.easeNone
+            x: this.props.xEnd, 
+            y: this.props.yEnd, 
+            ease: Linear.easeNone,
+            rotation: 360,
+            transformOrigin: "center"
         };
         let duration = this.getRandomInt(13, 20);
-        this.tween = new TimelineMax({repeat: -1, yoyo: true});
-        this.tween.add(TweenMax.fromTo(this.container, duration, from, to));
-        this.tween.to(this.container, duration, {rotation: 360, ease: Linear.easeNone, transformOrigin: "center" }, '-='+duration);
-        //this.tween.add(TweenMax.to(this.container, duration, {rotation: 360, ease: Linear.easeNone, transformOrigin: "center" }, '-='+duration));
-            //.fromTo(this.container, duration, {x:this.props.xStart, y:this.props.yStart}, {x:this.props.xEnd, y:this.props.yEnd,ease: Linear.easeNone})
-            //.fromTo(this.container, duration, from, to)
-            //.to(this.container, duration, {rotation: 360, ease: Linear.easeNone, transformOrigin: "center" }, '-='+duration)
-            //.to(this.container, duration, to, '-='+duration);
-            //.fromTo(this.container, duration, from, to, '-=7');
+        this.tween.add(TweenMax.fromTo(this.container, duration, from, to))
+        this.tween.restart();
+        //this.tween.yoyo(true);
+    }
+	componentDidMount(){
+        // let duration = this.getRandomInt(13, 20);
+        // this.tween = new TimelineMax({repeat: -1, yoyo: true});
+        // this.tween.add(TweenMax.fromTo(this.container, duration, from, to));
+
+        // this.tween = new TimelineMax();
+        // this.tween.to(this.container, duration, {rotation: 360, ease: Linear.easeNone, transformOrigin: "center" }, '-='+duration);
+        // this.tween.add(TweenMax.fromTo(this.container, duration, from, to, {yoyo:true}));
+        // this.tween.to(this.container, duration, {rotation: 360, ease: Linear.easeNone, transformOrigin: "center" }, '-='+duration);
+
+        // this.tween = new TimelineMax();
+        // this.tween.to(this.container, 5, {x: 360, y: 360}, '-='+duration);
+        if(this.state.entry) {
+            let transformFrom = {
+                x: this.props.xStart,
+                y: this.props.yEnd, 
+                scale: 5
+            }
+
+            let transformTo = {
+                x: this.props.xStart, 
+                y: this.props.yStart, 
+                scale: 1
+            }
+            this.tween = new TimelineMax();
+            this.tween.add(TweenMax.fromTo(this.container, 3, transformFrom, transformTo,0));
+            setTimeout(function () {
+                this.setState({
+                    entry: false
+                });
+                let from ={
+                    x: this.props.xStart, 
+                    y: this.props.yStart
+                };
+                let to={
+                    x: this.props.xEnd, 
+                    y: this.props.yEnd, 
+                    ease: Linear.easeNone,
+                    rotation: 360,
+                    transformOrigin: "center"
+                };
+                let duration = this.getRandomInt(13, 20);
+                // this.tween.add(TweenMax.fromTo(this.container, duration, from, to))
+                // this.tween.restart();
+                this.tween = new TimelineMax({repeat: -1, yoyo: true});
+                this.tween.add(TweenMax.fromTo(this.container, duration, from, to))
+                //this.tween.yoyo(true);
+            }.bind(this), 3000);
+        } else {
+            let from ={
+                x:this.props.xStart, 
+                y:this.props.yStart
+            };
+            let to={
+                x:this.props.xEnd, 
+                y:this.props.yEnd, 
+                ease: Linear.easeNone,
+                rotation: 360,
+                transformOrigin: "center"
+            };
+            this.tween = new TimelineMax({repeat: -1, yoyo: true});
+            this.tween.add(TweenMax.fromTo(this.container, duration, from, to))
+        }
+        // this.tween = new TimelineMax({onComplete:this.move});
+        // this.tween.add(TweenMax.fromTo(this.container, 3, {scale: 2}, {scale: 1},0));
+        // this.tween.add(TweenMax.fromTo(this.container, duration, from, to))
+        // this.tween.yoyo(true);
+        //this.tween.to(this.container, duration, {rotation: 360, ease: Linear.easeNone, transformOrigin: "center" }, '-='+duration);
 	}
 	render(){
 		return <div className="container">

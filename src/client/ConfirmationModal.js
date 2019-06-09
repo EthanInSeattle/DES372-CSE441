@@ -179,9 +179,9 @@ export default class ConfirmationModal extends React.Component {
         })
     }
 
-    handlePostQuestion = () => {
+    // handlePostQuestion = () => {
 
-    }
+    // }
     
     render(){
         console.log("time: ", this.state.startTime);
