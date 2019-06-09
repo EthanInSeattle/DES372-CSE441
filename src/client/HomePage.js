@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
 
+//import Favorit from '../../dist/assets/Favorit-Regular.otf';
 import RotatingBounceBall from './RotatingBounceBall';
 import ConfirmationModal from './ConfirmationModal';
 import Timer from './Timer';
@@ -19,14 +20,17 @@ const styles = StyleSheet.create({
     question: {
         textAlign: "center",
         color:"black",
-        fontFamily: "t26-carbon,monospace",
-        fontStyle: "normal",
+        // fontFamily: "t26-carbon,monospace",
+        // fontStyle: "normal",
+        '@font-face': {
+            fontFamily: 'Favorite',
+            src: "url('Favorit.otf') format('opentype')",
+            fontStyle: "normal"
+        },
         fontSize: 48,
         '@media (min-width: 400px)': {
             fontSize: 160
         },
-
-
         position: "absolute",
         top: "50%",
         left: "50%",

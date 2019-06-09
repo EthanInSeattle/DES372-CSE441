@@ -3,28 +3,30 @@ import {css, StyleSheet} from 'aphrodite';
 import Typography from '@material-ui/core/Typography';
 
 const styles = StyleSheet.create({
-    starterContainer: {
-        textAlign: "center",
-        position: "absolute",
-        fontFamily: "t26-carbon,monospace",
-        fontStyle: "italic",
-        fontSize: 14,
-        top: "10%",
-        '@media (min-width: 400px)': {
-            top: "30%",
-            fontSize: 36
-        },
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        //color: 'black',
-    },
+    // starterContainer: {
+    //     textAlign: "center",
+    //     position: "absolute",
+    //     fontFamily: "t26-carbon,monospace",
+    //     fontStyle: "italic",
+    //     fontSize: 14,
+    //     top: "10%",
+    //     '@media (min-width: 400px)': {
+    //         top: "30%",
+    //         fontSize: 36
+    //     },
+    //     left: "50%",
+    //     transform: "translate(-50%, -50%)",
+    //     //color: 'black',
+    // },
     answerContainer: {
         textAlign: "center",
         position: "absolute",
         top: "40%",
-        //fontFamily: "t26-carbon,monospace",
-        fontFamily: "Favorite",
-        fontStyle: "normal",
+        '@font-face': {
+            fontFamily: 'Favorite',
+            src: "url('Favorit.otf') format('opentype')",
+            fontStyle: "normal"
+        },
         fontSize: 48,
         '@media (min-width: 400px)': {
             top: "40%",
@@ -37,12 +39,15 @@ const styles = StyleSheet.create({
         textAlign: "center",
         position: "absolute",
         top: "80%",
-        //fontFamily: "t26-carbon,monospace",
-        fontFamily: "Favorite",
-        fontStyle: "normal",
-        fontSize: 36,
+        '@font-face': {
+            fontFamily: 'Favorite',
+            src: "url('Favorit.otf') format('opentype')",
+            fontStyle: "normal"
+        },
+        fontSize: 14,
+        whiteSpace: "nowrap",
         '@media (min-width: 400px)': {
-            //top: "80%",
+            top: "80%",
             fontSize: 60
         },
         left: "50%",
